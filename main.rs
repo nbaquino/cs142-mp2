@@ -22,7 +22,7 @@ fn main() {
     println!("----------------------------------------------------");
     println!("0/1 Knapsack Problem using Bottom Up DP (Tabulation)");
     println!("----------------------------------------------------");
-    println!("N\tRun\tValue\tTime(s)");
+    println!("N\tRun\t\tValue\t\tTime(s)");
 
     for &n in &test_sizes {
         let mut times = vec![];
@@ -39,7 +39,7 @@ fn main() {
             times.push(time_taken);
             total_value += value;
             // Print each run's results
-            println!("{}\t{}\t{}\t{:.6}", n, run, value, time_taken);
+            println!("{}\t{}\t\t{}\t\t{:.6}", n, run, value, time_taken);
         }
 
         let avg_value = total_value as f64 / times.len() as f64;
