@@ -6,6 +6,11 @@ edition = "2021"
 [dependencies]
 rand="0.8"
 
+
 [[bin]]
-name = "cs142-mp2"
-path = "main.rs"
+name = "dpbottom"
+path = "src/knapsack_bottomup_driver.rs"
+
+[[bin]]
+name = "dptop"
+path = "src/knapsack_topdown_driver.rs"
