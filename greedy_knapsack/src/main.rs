@@ -55,8 +55,30 @@ fn greedy_smallest_size(items: &mut Vec<Item>, max_weight: u32) -> (u32, u32, Ve
     (total_value, solution_weight, solution_items)
 }
 
+fn greedy_approximation(items: &mut Vec<Item>, max_weight: u32) -> (u32, u32, Vec<Item>) {
+    items.sort_by(|a,b| {
+        let ratio_a = a.value as f64 / a.weight as f64;
+        let ratio_b = b. value as f64 / b.weight as f64;
+        ratio_b.partial_cmp(&ratio_a).unwrap()
+    });
+
+    let mut total_value = 0;
+    let mut solution_weight = 0;
+    let mut solution_items = Vec::new();
+
+    for item in items.iter() {
+        if solution_weight + item.weight <= max_weight {
+            solution_items.push(Item {value: item.value, weight: item.weight});
+            total_value += item.value;
+            solution_weight += item.weight;
+        }
+    }
+
+    (total_value, solution_weight, solution_items)
+}
+
 fn main() {
-    let mut items = generate_items(100);
+    let mut items = generate_items(10);
     
     println!("Generated Items:");
     for (i, item) in items.iter().enumerate() {
@@ -78,4 +100,12 @@ fn main() {
     println!("Solution Items: {:?}", solution_items);
     println!("Total Value: {}", total_value);
     println!("Total Weight: {}", solution_weight);
+
+    let (total_value, solution_weight, solution_items) = greedy_approximation(&mut items, max_weight);
+
+    println!("Greedy Approximation Algorithm: Greatest Worth Ratio");
+    println!("Solution Items: {:?}", solution_items);
+    println!("Total Value: {}", total_value);
+    println!("Total Weight: {}", solution_weight);
+
 }
