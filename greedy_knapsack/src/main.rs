@@ -19,8 +19,26 @@ fn generate_items(n:u32) -> Vec<Item> {
     items
 }
 
-fn greedy_largest(items: &mut Vec<Item>, max_weight: u32) -> (u32, u32, Vec<Item>) {
+fn greedy_largest_value(items: &mut Vec<Item>, max_weight: u32) -> (u32, u32, Vec<Item>) {
     items.sort_by(|a, b| b.value.cmp(&a.value));
+
+    let mut total_value = 0;
+    let mut solution_weight = 0;
+    let mut solution_items = Vec::new();
+
+    for item in items.iter() {
+        if solution_weight + item.weight <= max_weight {
+            solution_items.push(Item {value: item.value, weight: item.weight});
+            total_value += item.value;
+            solution_weight += item.weight;
+        }
+    }
+
+    (total_value, solution_weight, solution_items)
+}
+
+fn greedy_smallest_size(items: &mut Vec<Item>, max_weight: u32) -> (u32, u32, Vec<Item>) {
+    items.sort_by(|a, b| a.weight.cmp(&b.weight));
 
     let mut total_value = 0;
     let mut solution_weight = 0;
@@ -47,8 +65,16 @@ fn main() {
 
     let max_weight = 1000;
 
-    let (total_value, solution_weight, solution_items) = greedy_largest(&mut items, max_weight);
+    let (total_value, solution_weight, solution_items) = greedy_largest_value(&mut items, max_weight);
 
+    println!("Greedy Algorithm 1: Largest Value First");
+    println!("Solution Items: {:?}", solution_items);
+    println!("Total Value: {}", total_value);
+    println!("Total Weight: {}", solution_weight);
+
+    let (total_value, solution_weight, solution_items) = greedy_smallest_size(&mut items, max_weight);
+
+    println!("Greedy Algorithm 2: Smallest Size First");
     println!("Solution Items: {:?}", solution_items);
     println!("Total Value: {}", total_value);
     println!("Total Weight: {}", solution_weight);
