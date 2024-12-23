@@ -1,0 +1,11 @@
+[package]
+name = "cs142-mp2"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand="0.8"
+
+[[bin]]
+name = "cs142-mp2"
+path = "main.rs"
