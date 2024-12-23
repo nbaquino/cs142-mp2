@@ -1,7 +1,41 @@
-mod dynamic_knapsack;
+use std::cmp::max;
 use std::time::Instant;
 use rand::Rng;
-use crate::dynamic_knapsack::knapsack_top_down;
+
+
+fn knapsack_top_down(w:usize, weights:&Vec<usize>, profits:&Vec<usize>, n:usize, dp: &mut Vec<Vec<i64>>) -> i64{
+
+    // If we have 0 elements remaining or knapsack is already filled, return 0
+    if n==0 || w == 0 {
+        dp[n][w] = 0;
+        return 0;
+    }
+
+    // If already calculated result earlier, return it
+    if dp[n][w] != -1 {
+        return dp[n][w];
+    }
+ 
+    // If the nth element has higher weight than available capacity,
+    // it can not be carried. So, return without including item
+    if weights[n-1] > w {
+        dp[n][w] = knapsack_top_down(w, weights, profits, n-1, dp);
+        return dp[n][w];
+    }
+
+    // Else, we check by including and excluding the given item
+    // And return max of it
+
+    dp[n][w] = max(
+        // If we exclude item, simply return function for n-1 items
+        knapsack_top_down(w, weights, profits, n-1, dp),
+
+        // If we include item, return profit of given item +
+        // maximum value from given weight for remaining items
+        profits[n-1] as i64 + knapsack_top_down(w-weights[n-1], weights, profits, n-1, dp));
+
+    return dp[n][w];
+}
 
 
 fn generate_data(n: usize, weight_range: (usize, usize), profit_range: (usize, usize)) -> (Vec<usize>, Vec<usize>) {
