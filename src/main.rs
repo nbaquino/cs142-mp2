@@ -3,13 +3,16 @@ mod greedy_knapsack;
 use greedy_knapsack::*;
 
 fn main() {
+    // Parameters
     let capacity: u32 = 1000;
     let value_range: (u32, u32) = (100, 500);
     let weight_range: (u32, u32) = (100, 1500);
     let test_cases: Vec<u32> = vec![100, 1000, 10000, 100000];
 
+
+    // Greedy Algorithm 1
     println!("------------------------------------------------------------------");
-    println!("0/1 Knapsack Problem using Greedy Algorithm 1: Largest Value First");
+    println!("0/1 Knapsack Problem using Greedy Algorithm: Largest Value First");
     println!("------------------------------------------------------------------");
     println!("N\tRun\tValue\tWeight\tTime(s)");
 
@@ -20,7 +23,6 @@ fn main() {
         for run in 1..=3 {
             let mut items = generate_items(n, weight_range, value_range);
 
-            
             let start_1 = Instant::now();
             let (value_1, weight_1) = greedy_largest_value(&mut items, capacity);
             let duration_1 = start_1.elapsed();
@@ -39,8 +41,9 @@ fn main() {
         println!("----------------------------------------");
     }
 
+    // Greedy Algorithm 2
     println!("--------------------------------------------------------------------");
-    println!("0/1 Knapsack Problem using Greedy Algorithm 2: Smallest Weight First");
+    println!("0/1 Knapsack Problem using Greedy Algorithm: Smallest Weight First");
     println!("--------------------------------------------------------------------");
     println!("N\tRun\tValue\tWeight\tTime(s)");
 
@@ -51,7 +54,6 @@ fn main() {
         for run in 1..=3 {
             let mut items = generate_items(n, weight_range, value_range);
 
-            
             let start_1 = Instant::now();
             let (value_1, weight_1) = greedy_smallest_weight(&mut items, capacity);
             let duration_1 = start_1.elapsed();
@@ -70,8 +72,9 @@ fn main() {
         println!("----------------------------------------");
     }
 
+    // Greedy Algorithm 3
     println!("-------------------------------------------------------------------");
-    println!("0/1 Knapsack Problem using Greedy Algorithm 3: Greatest Worth Ratio");
+    println!("0/1 Knapsack Problem using Greedy Algorithm: Greatest Worth Ratio");
     println!("-------------------------------------------------------------------");
     println!("N\tRun\tValue\tWeight\tTime(s)");
 
@@ -82,7 +85,6 @@ fn main() {
         for run in 1..=3 {
             let mut items = generate_items(n, weight_range, value_range);
 
-            
             let start_1 = Instant::now();
             let (value_1, weight_1) = greedy_value_weight_ratio(&mut items, capacity);
             let duration_1 = start_1.elapsed();
