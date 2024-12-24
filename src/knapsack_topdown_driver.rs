@@ -43,7 +43,7 @@ fn generate_data(n: usize, weight_range: (usize, usize), profit_range: (usize, u
 use std::thread;
 
 fn main() {
-    let builder = thread::Builder::new().stack_size(32 * 1024 * 1024); // 32 MB stack size
+    let builder = thread::Builder::new().stack_size(64 * 1024 * 1024); // 64 MB stack size
     builder
         .spawn(|| {
             // Place your main logic here
