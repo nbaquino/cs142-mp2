@@ -7,6 +7,9 @@ edition = "2021"
 rand="0.8"
 stacker = "0.1.14"
 
+[[bin]]
+name = "main"
+path = "src/main.rs"
 
 [[bin]]
 name = "dpbottom"
@@ -15,7 +18,3 @@ path = "src/knapsack_bottomup_driver.rs"
 [[bin]]
 name = "dptop"
 path = "src/knapsack_topdown_driver.rs"
-
-[[bin]]
-name = "greedy"
-path = "src/greedy_knapsack.rs"
