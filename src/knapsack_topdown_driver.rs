@@ -59,7 +59,7 @@ fn actual_main() {
     let weight_range = (100, 1500);
     let profit_range = (100, 500);
 
-    let test_sizes = vec![100, 1000, 5000, 10000, 25000, 50000, 75000, 100000];
+    let test_sizes = vec![5,10,100, 1000, 5000, 10000, 25000, 50000, 75000, 100000];
 
     // Print table header for Top-Down (Memoization)
     println!("----------------------------------------------------");
