@@ -15,3 +15,7 @@ path = "src/knapsack_bottomup_driver.rs"
 [[bin]]
 name = "dptop"
 path = "src/knapsack_topdown_driver.rs"
+
+[[bin]]
+name = "greedy"
+path = "src/greedy_knapsack.rs"

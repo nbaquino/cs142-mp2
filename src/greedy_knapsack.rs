@@ -1,111 +1,165 @@
+use std::time::Instant;
 use rand::Rng;
 
-#[derive(Debug)]
-struct Item {
-    value: u32,
-    weight: u32,
-}
-
-fn generate_items(n:u32) -> Vec<Item> {
+fn generate_items(n:u32, weight_range: (u32, u32), value_range: (u32, u32)) -> Vec<(u32, u32)> {
     let mut rng = rand::thread_rng();
-    let mut items = Vec::new();
 
-    for _ in 0..n {
-        let weight = rng.gen_range(100..=1500);
-        let value = rng.gen_range(100..=500);
-        items.push(Item {value, weight});
-    }
-
-    items
+    (0..n)
+        .map(|_| {
+            let weight = rng.gen_range(weight_range.0..=weight_range.1);
+            let value = rng.gen_range(value_range.0..=value_range.1);
+            (value, weight)
+        })
+        .collect()
 }
 
-fn greedy_largest_value(items: &mut Vec<Item>, max_weight: u32) -> (u32, u32, Vec<Item>) {
-    items.sort_by(|a, b| b.value.cmp(&a.value));
+fn greedy_largest_value(items: &mut Vec<(u32, u32)>, max_weight: u32) -> (u32, u32) {
+    items.sort_by(|a, b| b.0.cmp(&a.0));
 
     let mut total_value = 0;
-    let mut solution_weight = 0;
-    let mut solution_items = Vec::new();
+    let mut total_weight = 0;
 
     for item in items.iter() {
-        if solution_weight + item.weight <= max_weight {
-            solution_items.push(Item {value: item.value, weight: item.weight});
-            total_value += item.value;
-            solution_weight += item.weight;
+        if total_weight + item.1 <= max_weight {
+            total_value += item.0;
+            total_weight += item.1;
         }
     }
 
-    (total_value, solution_weight, solution_items)
+    (total_value, total_weight)
 }
 
-fn greedy_smallest_size(items: &mut Vec<Item>, max_weight: u32) -> (u32, u32, Vec<Item>) {
-    items.sort_by(|a, b| a.weight.cmp(&b.weight));
+fn greedy_smallest_weight(items: &mut Vec<(u32, u32)>, max_weight: u32) -> (u32, u32) {
+    items.sort_by(|a, b| a.1.cmp(&b.1));
 
     let mut total_value = 0;
-    let mut solution_weight = 0;
-    let mut solution_items = Vec::new();
+    let mut total_weight = 0;
 
     for item in items.iter() {
-        if solution_weight + item.weight <= max_weight {
-            solution_items.push(Item {value: item.value, weight: item.weight});
-            total_value += item.value;
-            solution_weight += item.weight;
+        if total_weight + item.1 <= max_weight {
+            total_value += item.0;
+            total_weight += item.1;
         }
     }
 
-    (total_value, solution_weight, solution_items)
+    (total_value, total_weight)
 }
 
-fn greedy_approximation(items: &mut Vec<Item>, max_weight: u32) -> (u32, u32, Vec<Item>) {
-    items.sort_by(|a,b| {
-        let ratio_a = a.value as f64 / a.weight as f64;
-        let ratio_b = b. value as f64 / b.weight as f64;
+fn greedy_value_weight_ratio(items: &mut Vec<(u32, u32)>, max_weight: u32) -> (u32, u32) {
+    items.sort_by(|a, b| {
+        let ratio_a = a.0 as f64 / a.1 as f64;
+        let ratio_b = b.0 as f64 / b.1 as f64;
         ratio_b.partial_cmp(&ratio_a).unwrap()
     });
 
     let mut total_value = 0;
-    let mut solution_weight = 0;
-    let mut solution_items = Vec::new();
+    let mut total_weight = 0;
 
     for item in items.iter() {
-        if solution_weight + item.weight <= max_weight {
-            solution_items.push(Item {value: item.value, weight: item.weight});
-            total_value += item.value;
-            solution_weight += item.weight;
+        if total_weight + item.1 <= max_weight {
+            total_value += item.0;
+            total_weight += item.1;
         }
     }
 
-    (total_value, solution_weight, solution_items)
+    (total_value, total_weight)
 }
-
 fn main() {
-    let mut items = generate_items(10);
+    let capacity: u32 = 1000;
+    let value_range: (u32, u32) = (100, 500);
+    let weight_range: (u32, u32) = (100, 1500);
+    let test_cases: Vec<u32> = vec![100, 1000, 10000, 100000];
 
-    println!("Generated Items:");
-    for (i, item) in items.iter().enumerate() {
-        println!("Item {}: Value = {}, Weight = {}", i + 1, item.value, item.weight);
+    println!("------------------------------------------------------------------");
+    println!("0/1 Knapsack Problem using Greedy Algorithm 1: Largest Value First");
+    println!("------------------------------------------------------------------");
+    println!("N\tRun\tValue\tWeight\tTime(s)");
+
+    for &n in &test_cases {
+        let mut times: Vec<f64> = vec![];
+        let mut total_value: u32 = 0;
+        
+        for run in 1..=3 {
+            let mut items = generate_items(n, weight_range, value_range);
+
+            
+            let start_1 = Instant::now();
+            let (value_1, weight_1) = greedy_largest_value(&mut items, capacity);
+            let duration_1 = start_1.elapsed();
+            
+            let time_taken_1 = duration_1.as_secs_f64();
+            times.push(time_taken_1);
+            total_value += value_1;
+            
+            println!("{}\t{}\t{}\t{}\t{:.6}", n, run, value_1, weight_1, time_taken_1);   
+        }
+
+        let avg_value = total_value as f64 / times.len() as f64;
+        let avg_time: f64 = times.iter().sum::<f64>() / times.len() as f64;
+        println!("----------------------------------------");
+        println!("Average\t\t{:.6}\t{:.6}", avg_value, avg_time);
+        println!("----------------------------------------");
     }
 
-    let max_weight = 1000;
+    println!("--------------------------------------------------------------------");
+    println!("0/1 Knapsack Problem using Greedy Algorithm 2: Smallest Weight First");
+    println!("--------------------------------------------------------------------");
+    println!("N\tRun\tValue\tWeight\tTime(s)");
 
-    let (total_value, solution_weight, solution_items) = greedy_largest_value(&mut items, max_weight);
+    for &n in &test_cases {
+        let mut times: Vec<f64> = vec![];
+        let mut total_value: u32 = 0;
+        
+        for run in 1..=3 {
+            let mut items = generate_items(n, weight_range, value_range);
 
-    println!("Greedy Algorithm 1: Largest Value First");
-    println!("Solution Items: {:?}", solution_items);
-    println!("Total Value: {}", total_value);
-    println!("Total Weight: {}", solution_weight);
+            
+            let start_1 = Instant::now();
+            let (value_1, weight_1) = greedy_smallest_weight(&mut items, capacity);
+            let duration_1 = start_1.elapsed();
+            
+            let time_taken_1 = duration_1.as_secs_f64();
+            times.push(time_taken_1);
+            total_value += value_1;
+            
+            println!("{}\t{}\t{}\t{}\t{:.6}", n, run, value_1, weight_1, time_taken_1);   
+        }
 
-    let (total_value, solution_weight, solution_items) = greedy_smallest_size(&mut items, max_weight);
+        let avg_value = total_value as f64 / times.len() as f64;
+        let avg_time: f64 = times.iter().sum::<f64>() / times.len() as f64;
+        println!("----------------------------------------");
+        println!("Average\t\t{:.6}\t{:.6}", avg_value, avg_time);
+        println!("----------------------------------------");
+    }
 
-    println!("Greedy Algorithm 2: Smallest Size First");
-    println!("Solution Items: {:?}", solution_items);
-    println!("Total Value: {}", total_value);
-    println!("Total Weight: {}", solution_weight);
+    println!("-------------------------------------------------------------------");
+    println!("0/1 Knapsack Problem using Greedy Algorithm 3: Greatest Worth Ratio");
+    println!("-------------------------------------------------------------------");
+    println!("N\tRun\tValue\tWeight\tTime(s)");
 
-    let (total_value, solution_weight, solution_items) = greedy_approximation(&mut items, max_weight);
+    for &n in &test_cases {
+        let mut times: Vec<f64> = vec![];
+        let mut total_value: u32 = 0;
+        
+        for run in 1..=3 {
+            let mut items = generate_items(n, weight_range, value_range);
 
-    println!("Greedy Approximation Algorithm: Greatest Worth Ratio");
-    println!("Solution Items: {:?}", solution_items);
-    println!("Total Value: {}", total_value);
-    println!("Total Weight: {}", solution_weight);
+            
+            let start_1 = Instant::now();
+            let (value_1, weight_1) = greedy_value_weight_ratio(&mut items, capacity);
+            let duration_1 = start_1.elapsed();
+            
+            let time_taken_1 = duration_1.as_secs_f64();
+            times.push(time_taken_1);
+            total_value += value_1;
+            
+            println!("{}\t{}\t{}\t{}\t{:.6}", n, run, value_1, weight_1, time_taken_1);   
+        }
 
+        let avg_value = total_value as f64 / times.len() as f64;
+        let avg_time: f64 = times.iter().sum::<f64>() / times.len() as f64;
+        println!("----------------------------------------");
+        println!("Average\t\t{:.6}\t{:.6}", avg_value, avg_time);
+        println!("----------------------------------------");
+    }
 }
