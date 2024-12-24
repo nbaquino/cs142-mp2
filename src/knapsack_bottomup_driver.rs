@@ -31,7 +31,7 @@ fn generate_data(n: usize, weight_range: (usize, usize), profit_range: (usize, u
     (weights, profits)
 }
 
-fn main() {
+fn main() { 
     let capacity = 1000;
     let weight_range = (100, 1500);
     let profit_range = (100, 500);
