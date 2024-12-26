@@ -9,8 +9,8 @@ stacker = "0.1.14"
 csv = "1.1"
 
 [[bin]]
-name = "main"
-path = "src/main.rs"
+name = "greedy"
+path = "src/greedy_driver.rs"
 
 [[bin]]
 name = "dpbottom"

@@ -1,7 +1,10 @@
 use std::time::Instant;
+use csv::Writer;
+use std::fs;
+use std::path::Path;
+
 use rand::Rng;
 use std::cmp::max;
-
 
 fn knapsack_bottom_up(w: usize, weights: &Vec<usize>, profits: &Vec<usize>, n: usize, dp: &mut Vec<Vec<usize>>) -> usize {
     // Initialize the first column to 0
@@ -35,8 +38,17 @@ fn main() {
     let capacity = 1000;
     let weight_range = (100, 1500);
     let profit_range = (100, 500);
+    let test_sizes: Vec<usize> = (1000..=100000).step_by(1000).collect();
 
-    let test_sizes = vec![5,10,100, 1000, 5000, 10000, 25000, 50000, 75000, 100000];
+    let results_dir = "results";
+    if !Path::new(results_dir).exists() {
+        fs::create_dir(results_dir).expect("Failed to create results directory");
+    }
+
+    let mut wtr_bottomup = Writer::from_path(format!("{}/bottom_up.csv", results_dir)).unwrap();
+
+    let headers = &["N", "1st Run", "2nd Run", "3rd Run", "Average", "Value 1", "Value 2", "Value 3", "Weight 1", "Weight 2", "Weight 3"];
+    wtr_bottomup.write_record(headers).unwrap();
 
     // Print table header
     println!("----------------------------------------------------");
@@ -47,6 +59,7 @@ fn main() {
     for &n in &test_sizes {
         let mut times = vec![];
         let mut total_value = 0;
+
         for run in 1..=3 { // Run 3 times for averaging
             let (weights, profits) = generate_data(n, weight_range, profit_range);
             let mut dp = vec![vec![0; capacity + 1]; n + 1];
@@ -58,6 +71,7 @@ fn main() {
             let time_taken = duration.as_secs_f64();
             times.push(time_taken);
             total_value += value;
+            
             // Print each run's results
             println!("{}\t{}\t\t{}\t\t{:.6}", n, run, value, time_taken);
         }
