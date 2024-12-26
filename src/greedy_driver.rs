@@ -22,7 +22,7 @@ fn main() {
     let mut wtr_smallest_weight = Writer::from_path(format!("{}/greedy_smallest_weight.csv", results_dir)).unwrap();
     let mut wtr_value_weight_ratio = Writer::from_path(format!("{}/greedy_value_weight_ratio.csv", results_dir)).unwrap();
 
-    let headers = &["N", "1st Run", "2nd Run", "3rd Run", "Average Value", "Value 1", "Value 2", "Value 3", "Weight 1", "Weight 2", "Weight 3", "Time 1", "Time 2", "Time 3", "Average Time"];
+    let headers = &["N", "1st Run", "2nd Run", "3rd Run", "Average Value", "Weight 1", "Weight 2", "Weight 3", "Time 1", "Time 2", "Time 3", "Average Time"];
     wtr_largest_value.write_record(headers).unwrap();
     wtr_smallest_weight.write_record(headers).unwrap();
     wtr_value_weight_ratio.write_record(headers).unwrap();
@@ -61,9 +61,6 @@ fn main() {
             values[1].to_string(),
             values[2].to_string(),
             avg_value.to_string(),
-            values[0].to_string(),
-            values[1].to_string(),
-            values[2].to_string(),
             weights[0].to_string(),
             weights[1].to_string(),
             weights[2].to_string(),
@@ -111,9 +108,6 @@ fn main() {
             values[1].to_string(),
             values[2].to_string(),
             avg_value.to_string(),
-            values[0].to_string(),
-            values[1].to_string(),
-            values[2].to_string(),
             weights[0].to_string(),
             weights[1].to_string(),
             weights[2].to_string(),
@@ -161,9 +155,6 @@ fn main() {
             values[1].to_string(),
             values[2].to_string(),
             avg_value.to_string(),
-            values[0].to_string(),
-            values[1].to_string(),
-            values[2].to_string(),
             weights[0].to_string(),
             weights[1].to_string(),
             weights[2].to_string(),
