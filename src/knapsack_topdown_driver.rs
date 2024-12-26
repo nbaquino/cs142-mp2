@@ -46,7 +46,6 @@ fn main() {
     let builder = thread::Builder::new().stack_size(64 * 1024 * 1024); // 64 MB stack size
     builder
         .spawn(|| {
-            // Place your main logic here
             actual_main();
         })
         .unwrap()
