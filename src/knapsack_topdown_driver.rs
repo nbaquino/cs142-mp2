@@ -1,8 +1,18 @@
-use std::cmp::max;
+use csv::Writer;
+use std::fs;
+use std::path::Path;
 use std::time::Instant;
-use rand::Rng;
 
-fn knapsack_top_down(w: usize, weights: &Vec<usize>, profits: &Vec<usize>, n: usize, dp: &mut Vec<Vec<i64>>) -> i64 {
+use rand::Rng;
+use std::cmp::max;
+
+fn knapsack_top_down(
+    w: usize,
+    weights: &Vec<usize>,
+    profits: &Vec<usize>,
+    n: usize,
+    dp: &mut Vec<Vec<i64>>,
+) -> i64 {
     // If we have 0 elements remaining or knapsack is already filled, return 0
     if n == 0 || w == 0 {
         dp[n][w] = 0;
@@ -34,10 +44,18 @@ fn knapsack_top_down(w: usize, weights: &Vec<usize>, profits: &Vec<usize>, n: us
     return dp[n][w];
 }
 
-fn generate_data(n: usize, weight_range: (usize, usize), profit_range: (usize, usize)) -> (Vec<usize>, Vec<usize>) {
+fn generate_data(
+    n: usize,
+    weight_range: (usize, usize),
+    profit_range: (usize, usize),
+) -> (Vec<usize>, Vec<usize>) {
     let mut rng = rand::thread_rng();
-    let weights = (0..n).map(|_| rng.gen_range(weight_range.0..=weight_range.1)).collect();
-    let profits = (0..n).map(|_| rng.gen_range(profit_range.0..=profit_range.1)).collect();
+    let weights = (0..n)
+        .map(|_| rng.gen_range(weight_range.0..=weight_range.1))
+        .collect();
+    let profits = (0..n)
+        .map(|_| rng.gen_range(profit_range.0..=profit_range.1))
+        .collect();
     (weights, profits)
 }
 use std::thread;
@@ -57,8 +75,27 @@ fn actual_main() {
     let capacity = 1000;
     let weight_range = (100, 1500);
     let profit_range = (100, 500);
+    let test_sizes: Vec<usize> = (1000..=100000).step_by(1000).collect();
 
-    let test_sizes = vec![5,10,100, 1000, 5000, 10000, 25000, 50000, 75000, 100000];
+    let results_dir = "results";
+    if !Path::new(results_dir).exists() {
+        fs::create_dir(results_dir).expect("Failed to create results directory");
+    }
+
+    let mut wtr_topdown = Writer::from_path(format!("{}/top_down.csv", results_dir)).unwrap();
+
+    let headers = &[
+        "N",
+        "1st Run",
+        "2nd Run",
+        "3rd Run",
+        "Average",
+        "Time 1",
+        "Time 2",
+        "Time 3",
+        "Average Time",
+    ];
+    wtr_topdown.write_record(headers).unwrap();
 
     // Print table header for Top-Down (Memoization)
     println!("----------------------------------------------------");
@@ -68,8 +105,9 @@ fn actual_main() {
 
     for &n in &test_sizes {
         let mut times = vec![];
-        let mut total_value = 0;
-        for run in 1..=3 { // Run 3 times for averaging
+        let mut values = vec![];
+        for run in 1..=3 {
+            // Run 3 times for averaging
             let (weights, profits) = generate_data(n, weight_range, profit_range);
             let mut dp = vec![vec![-1; capacity + 1]; n + 1]; // Initialize with -1 for memoization
 
@@ -79,13 +117,28 @@ fn actual_main() {
 
             let time_taken = duration.as_secs_f64();
             times.push(time_taken);
-            total_value += value;
+            values.push(value);
             // Print each run's results
             println!("{}\t{}\t\t{}\t\t{:.6}", n, run, value, time_taken);
         }
 
-        let avg_value = total_value as f64 / times.len() as f64;
+        let avg_value = values.iter().sum::<i64>() as f64 / times.len() as f64;
         let avg_time: f64 = times.iter().sum::<f64>() / times.len() as f64;
+
+        wtr_topdown
+            .write_record(&[
+                n.to_string(),
+                values[0].to_string(),
+                values[1].to_string(),
+                values[2].to_string(),
+                avg_value.to_string(),
+                times[0].to_string(),
+                times[1].to_string(),
+                times[2].to_string(),
+                avg_time.to_string(),
+            ])
+            .unwrap();
+
         // Print average results with borders
         println!("----------------------------------------------------");
         println!("\tAverage\t\t{:.6}\t{:.6}", avg_value, avg_time);
