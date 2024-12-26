@@ -1,5 +1,8 @@
 use std::time::Instant;
 use csv::Writer;
+use std::fs;
+use std::path::Path;
+
 mod greedy_knapsack;
 use greedy_knapsack::*;
 
@@ -10,11 +13,16 @@ fn main() {
     let weight_range: (u32, u32) = (100, 1500);
     let test_cases: Vec<u32> = (1000..=100000).step_by(1000).collect();
 
-    let mut wtr_largest_value = Writer::from_path("greedy_largest_value.csv").unwrap();
-    let mut wtr_smallest_weight = Writer::from_path("greedy_smallest_weight.csv").unwrap();
-    let mut wtr_value_weight_ratio = Writer::from_path("greedy_value_weight_ratio.csv").unwrap();
+    let results_dir = "results";
+    if !Path::new(results_dir).exists() {
+        fs::create_dir(results_dir).expect("Failed to create results directory");
+    }
 
-    let headers = &["N", "1st Run", "2nd Run", "3rd Run", "Average", "Value 1", "Value 2", "Value 3"];
+    let mut wtr_largest_value = Writer::from_path(format!("{}/greedy_largest_value.csv", results_dir)).unwrap();
+    let mut wtr_smallest_weight = Writer::from_path(format!("{}/greedy_smallest_weight.csv", results_dir)).unwrap();
+    let mut wtr_value_weight_ratio = Writer::from_path(format!("{}/greedy_value_weight_ratio.csv", results_dir)).unwrap();
+
+    let headers = &["N", "1st Run", "2nd Run", "3rd Run", "Average", "Value 1", "Value 2", "Value 3", "Weight 1", "Weight 2", "Weight 3"];
     wtr_largest_value.write_record(headers).unwrap();
     wtr_smallest_weight.write_record(headers).unwrap();
     wtr_value_weight_ratio.write_record(headers).unwrap();
@@ -56,6 +64,9 @@ fn main() {
             values[0].to_string(),
             values[1].to_string(),
             values[2].to_string(),
+            weights[0].to_string(),
+            weights[1].to_string(),
+            weights[2].to_string(),
         ]).unwrap();
 
         println!("Average value: {:.6}, Average time: {:.6}", avg_value, avg_time);
@@ -99,6 +110,9 @@ fn main() {
             values[0].to_string(),
             values[1].to_string(),
             values[2].to_string(),
+            weights[0].to_string(),
+            weights[1].to_string(),
+            weights[2].to_string(),
         ]).unwrap();
 
         println!("Average value: {:.6}, Average time: {:.6}", avg_value, avg_time);
@@ -142,6 +156,9 @@ fn main() {
             values[0].to_string(),
             values[1].to_string(),
             values[2].to_string(),
+            weights[0].to_string(),
+            weights[1].to_string(),
+            weights[2].to_string(),
         ]).unwrap();
 
         println!("Average value: {:.6}, Average time: {:.6}", avg_value, avg_time);
