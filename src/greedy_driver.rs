@@ -145,7 +145,7 @@ fn main() {
 
             println!("{}-{}:\t{}\t{}\t{}", n, run, value_1, weight_1, time_taken_1);
         }
-
+        
         let avg_value = values.iter().sum::<u32>() as f64 / values.len() as f64;
         let avg_time: f64 = times.iter().sum::<f64>() / times.len() as f64;
 
