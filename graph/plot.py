@@ -222,6 +222,8 @@ plt.tight_layout()
 plt.show()
 
 
+plt.figure(figsize=(10, 6))
+
 # Plot for DP Bottom Up (Tabulation)
 plt.plot(
     df_dp_bottom_up["N"],
